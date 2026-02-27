@@ -17,10 +17,7 @@
         .weather-icon { font-size: 2em; }
         .tip-box { background: #fff9e6; border-left: 5px solid #ffcc00; padding: 12px; margin: 10px 0; font-size: 0.9em; border-radius: 4px; }
         .tip-box ul { margin: 5px 0 0 0; padding-left: 20px; list-style-type: "💡 "; }
-        
-        /* FÖRKLARINGSRUTA FÖR SKALKLÄDER */
         .info-box { background: #e7f3ff; border-left: 5px solid #004a99; padding: 10px; margin: 10px 0; font-size: 0.8em; color: #004a99; border-radius: 4px; }
-
         .wet-alert { background: #fff1f1; border-left: 5px solid #d9534f; padding: 12px; margin: 10px 0; font-size: 0.9em; color: #d9534f; font-weight: bold; border-radius: 4px; display: none; }
         ul { padding-left: 18px; margin: 10px 0; }
         li { margin-bottom: 6px; font-size: 0.85em; color: #444; }
@@ -44,7 +41,7 @@
     <div class="main-card">
         <div class="info-box">
             <strong>Vad är skalkläder?</strong><br>
-            Tunna, vind- och vattentäta ytterkläder (mellanväderskläder) som man har utanpå vanliga kläder eller fleece.
+            Tunna, vind- och vattentäta ytterkläder (mellanväderskläder) som används utanpå vanliga kläder eller fleece.
         </div>
 
         <div class="day-section">
@@ -71,7 +68,7 @@
                 </div>
             </div>
             <div class="tip-box" id="tomorrow-tips"></div>
-            <p id="reserve-title" style="font-weight: bold; font-size: 0.9em; margin-bottom: 5px;">I reservkorgen imorgon:</p>
+            <p id="reserve-title" style="font-weight: bold; font-size: 0.9em; margin-bottom: 5px;">I reservkorgen:</p>
             <ul id="tomorrow-list"></ul>
         </div>
 
@@ -102,64 +99,98 @@ async function updateWeather() {
         document.getElementById('today-name').innerText = "Just nu (" + days[todayDate.getDay()] + ")";
         document.getElementById('tomorrow-label').innerText = "Morgondagen (" + days[tomorrowDate.getDay()] + ")";
 
-        // --- JUST NU ---
+        // --- FUNKTION FÖR ATT GENERERA TIPS ---
+        function getWeatherTips(temp, rain) {
+            if (rain > 0.5) {
+                return [
+                    "Dra vantarna UNDER jackärmen så rinner inte vatten in.",
+                    "Regnkläder/Galonbyxor är ett måste idag.",
+                    "Se till att barnen har gummistövlar.",
+                    "Extra vantar behövs i korgen, de blir fort våta."
+                ];
+            } else if (temp > 16) {
+                return [
+                    "Använd tunn långärmad tröja för att undvika solbränna.",
+                    "Glöm inte solhatt eller keps.",
+                    "Smörj gärna in barnen med solkräm på morgonen.",
+                    "Tunna bomullskläder andas bäst i värmen."
+                ];
+            } else if (temp <= 0) {
+                return [
+                    "Använd ull närmast kroppen (lager 1).",
+                    "Lager-på-lager håller värmen bäst ute i kylan.",
+                    "Varma fodrade kängor rekommenderas.",
+                    "Glöm inte en ordentlig mössa och varma vantar."
+                ];
+            } else {
+                return [
+                    "Mellanväderskläder (skalställ) fungerar utmärkt idag.",
+                    "En fleece-tröja är bra som extra lager under jackan.",
+                    "Tunn mössa och fingervantar räcker ofta.",
+                    "Bra lekväder! Bekväma skor rekommenderas."
+                ];
+            }
+        }
+
+        // --- JUST NU LOGIK ---
         const cTemp = Math.round(data.current.temperature_2m);
         const cRain = data.current.precipitation;
         document.getElementById('current-temp').innerText = cTemp + '°C';
         
-        let cTips = "<strong>Dagens tips:</strong><ul>";
+        const currentTips = getWeatherTips(cTemp, cRain);
+        let cTipsHtml = "<strong>Dagens tips:</strong><ul>";
+        currentTips.forEach(t => cTipsHtml += `<li>${t}</li>`);
+        document.getElementById('current-tips').innerHTML = cTipsHtml + "</ul>";
+
         let cList = "";
-        
-        if (cRain > 0) {
+        if (cRain > 0.5) {
             document.getElementById('current-icon').innerText = "🌧️";
-            document.getElementById('weather-desc').innerText = "Blött ute";
+            document.getElementById('weather-desc').innerText = "Regn/Blött";
             document.getElementById('wet-alert').style.display = 'block';
-            cTips += "<li>Dra vantarna UNDER jackärmen.</li><li>Regnkläder/Galon behövs!</li>";
             cList = "<li><strong>På:</strong> Regnkläder & Gummistövlar.</li>";
         } else if (cTemp > 16) {
             document.getElementById('current-icon').innerText = "☀️";
-            document.getElementById('weather-desc').innerText = "Stark sol";
-            cTips += "<li>Långärmad tunn tröja skyddar mot solen.</li><li>Solhatt på!</li>";
+            document.getElementById('weather-desc').innerText = "Soligt/Varmt";
+            document.getElementById('wet-alert').style.display = 'none';
             cList = "<li><strong>På:</strong> Tunna långärmade kläder.</li>";
         } else {
             document.getElementById('current-icon').innerText = cTemp <= 0 ? "❄️" : "⛅";
             document.getElementById('weather-desc').innerText = cTemp <= 0 ? "Kallt" : "Uppehåll";
-            cTips += cTemp <= 0 ? "<li>Ull underst.</li>" : "<li>Mellanväderskläder räcker.</li>";
+            document.getElementById('wet-alert').style.display = 'none';
             cList = cTemp <= 0 ? "<li><strong>På:</strong> Overall & kängor.</li>" : "<li><strong>På:</strong> Skaljacka & skalbyxor.</li>";
         }
-        
-        document.getElementById('current-tips').innerHTML = cTips + "</ul>";
         document.getElementById('current-list').innerHTML = cList;
 
-        // --- MORGONDAGEN ---
+        // --- MORGONDAGEN LOGIK ---
         const tTemp = Math.round(data.daily.temperature_2m_max[1]);
         const tRainSum = data.daily.precipitation_sum[1];
         document.getElementById('tomorrow-temp').innerText = tTemp + '°C';
         
-        let tTips = "<strong>Att tänka på:</strong><ul>";
-        let tReservereList = "";
         const isWeekend = (tomorrowDate.getDay() === 0 || tomorrowDate.getDay() === 6);
+        let tTipsHtml = "<strong>Att tänka på:</strong><ul>";
+        let tReservereList = "";
 
         if (isWeekend) {
             document.getElementById('reserve-title').innerText = "Tips för helgen:";
             document.getElementById('tomorrow-tips').innerHTML = "<strong>Dagis är stängt</strong>";
-            tReservereList = tRainSum > 0.5 ? `<li>Regnkläder behövs för utelek.</li>` : `<li>Perfekt för parkhäng.</li>`;
+            tReservereList = tRainSum > 0.5 ? `<li>Regnkläder behövs för utelek.</li>` : `<li>Perfekt för parkhäng!</li>`;
+            document.getElementById('tomorrow-icon').innerText = tRainSum > 0.5 ? "🌧️" : "⛅";
         } else {
             document.getElementById('reserve-title').innerText = "I reservkorgen imorgon:";
+            const tomorrowTips = getWeatherTips(tTemp, tRainSum);
+            tomorrowTips.forEach(t => tTipsHtml += `<li>${t}</li>`);
+            document.getElementById('tomorrow-tips').innerHTML = tTipsHtml + "</ul>";
+
             if (tRainSum > 0.5) {
                 document.getElementById('tomorrow-icon').innerText = "🌧️";
-                tTips += "<li>Blött imorgon.</li><li>Extra vantar behövs!</li>";
-                tReservereList = `<li class="must-have">2-3 par extra vantar</li><li>Extra byxor & strumpor</li>`;
+                tReservereList = `<li class="must-have">2-3 par extra vantar</li><li class="must-have">Extra byxor & strumpor</li><li>Fleece-tröja</li>`;
             } else if (tTemp > 16) {
                 document.getElementById('tomorrow-icon').innerText = "☀️";
-                tTips += "<li>Skydda mot solen!</li>";
-                tReservereList = `<li class="must-have">Tunna långärmade tröjor</li><li>Solhatt/Keps</li>`;
+                tReservereList = `<li class="must-have">Tunn långärmad reservtröja</li><li>Keps/Solhatt</li><li>Reservbyxor</li>`;
             } else {
                 document.getElementById('tomorrow-icon').innerText = tTemp <= 0 ? "❄️" : "⛅";
-                tTips += tTemp <= 0 ? "<li>Varma vantar i korgen.</li>" : "<li>Mellanväderskläder i korgen.</li>";
-                tReservereList = `<li>Extra vantar</li><li>Fleece-tröja</li><li>Extra strumpor</li>`;
+                tReservereList = `<li>Extra vantar</li><li>Fleece-tröja</li><li>Torra strumpor</li><li>Mjukisbyxor</li>`;
             }
-            document.getElementById('tomorrow-tips').innerHTML = tTips + "</ul>";
         }
         document.getElementById('tomorrow-list').innerHTML = tReservereList;
 
@@ -176,7 +207,7 @@ async function updateWeather() {
         }
         document.getElementById('mini-forecast').innerHTML = forecastHtml;
         document.getElementById('last-updated').innerText = "Senast uppdaterad: " + new Date().toLocaleTimeString();
-    } catch (e) { console.log(e); }
+    } catch (e) { console.error(e); }
 }
 updateWeather();
 </script>
