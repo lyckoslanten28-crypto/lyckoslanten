@@ -3,110 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="refresh" content="300">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dagis-Koll Dickursby 01300</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #eef2f7; padding: 15px; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 480px; }
-        
-        .header { 
-            background: #004a99; 
-            color: white; 
-            padding: 20px; 
-            border-radius: 15px 15px 0 0; 
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .main-card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 0 0 15px 15px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-            margin-bottom: 20px;
-        }
-
-        .day-section {
-            padding: 15px 0;
-            border-bottom: 2px solid #f0f4f8;
-        }
-
-        .date-label { 
-            background: #004a99; 
-            color: white; 
-            padding: 4px 12px; 
-            border-radius: 20px; 
-            font-size: 0.8em; 
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .temp-display { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 10px;
-        }
-
+        .header { background: #004a99; color: white; padding: 20px; border-radius: 15px 15px 0 0; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .main-card { background: white; padding: 20px; border-radius: 0 0 15px 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .day-section { padding: 15px 0; border-bottom: 2px solid #f0f4f8; }
+        .date-label { background: #004a99; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        .temp-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .temp-val { font-size: 2.2em; font-weight: bold; color: #333; }
         .weather-icon { font-size: 2em; }
-
-        .tip-box { 
-            background: #fff9e6; 
-            border-left: 5px solid #ffcc00; 
-            padding: 12px; 
-            margin: 10px 0; 
-            font-size: 0.9em;
-            border-radius: 4px;
-        }
-
-        .tip-box ul {
-            margin: 5px 0 0 0;
-            padding-left: 20px;
-            list-style-type: "💡 ";
-        }
-
-        .wet-alert { 
-            background: #fff1f1; 
-            border-left: 5px solid #d9534f; 
-            padding: 12px; 
-            margin: 10px 0; 
-            font-size: 0.9em;
-            color: #d9534f;
-            font-weight: bold;
-            border-radius: 4px;
-            display: none;
-        }
-
+        .tip-box { background: #fff9e6; border-left: 5px solid #ffcc00; padding: 12px; margin: 10px 0; font-size: 0.9em; border-radius: 4px; }
+        .tip-box ul { margin: 5px 0 0 0; padding-left: 20px; list-style-type: "💡 "; }
+        .wet-alert { background: #fff1f1; border-left: 5px solid #d9534f; padding: 12px; margin: 10px 0; font-size: 0.9em; color: #d9534f; font-weight: bold; border-radius: 4px; display: none; }
         ul { padding-left: 18px; margin: 10px 0; }
         li { margin-bottom: 6px; font-size: 0.85em; color: #444; }
         .must-have { color: #d9534f; font-weight: bold; }
-
-        .forecast-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px dashed #eee;
-        }
-        .forecast-item {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid #eee;
-        }
+        .forecast-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; }
+        .forecast-item { background: #f8f9fa; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid #eee; }
         .forecast-day { font-size: 0.8em; font-weight: bold; color: #666; display: block; }
         .forecast-temp { font-size: 1.1em; font-weight: bold; margin: 5px 0; display: block; }
+        #last-updated { font-size: 0.7em; color: #999; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="header">
-        <h2 style="margin:0;">Vädret på daghemmet Lyckoslanten</h2>
-        <small>Lyckoslanten</small>
+        <h2 style="margin:0;">Vädret på Lyckoslanten</h2>
+        <small>Dickursby 01300</small>
     </div>
 
     <div class="main-card">
@@ -116,7 +43,7 @@
                 <div class="temp-val" id="current-temp">--°C</div>
                 <div style="text-align: right;">
                     <div class="weather-icon" id="current-icon">☁️</div>
-                    <small id="weather-desc">Hämtar...</small>
+                    <small id="weather-desc">Hämtar väder...</small>
                 </div>
             </div>
             
@@ -125,7 +52,8 @@
             </div>
 
             <div class="tip-box" id="dynamic-tip">
-                </div>
+                <strong>Hämtar tips...</strong>
+            </div>
             
             <ul id="clothing-list">
                 </ul>
@@ -141,14 +69,13 @@
                 </div>
             </div>
             <div class="tip-box">
-                <strong>Att tänka på:</strong>
+                <strong>Att tänka på imorgon:</strong>
                 <ul>
                     <li>Minusgrader på morgonen. Använd ull underst.</li>
                     <li>Kolla så att reservvantar finns i korgen.</li>
                 </ul>
             </div>
-            
-            <p style="font-weight: bold; font-size: 0.9em; margin-bottom: 5px;">I reservkorgen imorgon:</p>
+            <p style="font-weight: bold; font-size: 0.9em; margin-bottom: 5px;">I reservkorgen:</p>
             <ul>
                 <li class="must-have">2-3 par extra vantar (de blir blöta fort!)</li>
                 <li>Extra mjukisbyxor & varma sockor</li>
@@ -168,6 +95,7 @@
                 <div class="forecast-item"><span class="forecast-day">Tor</span><span class="weather-icon">🌨️</span><span class="forecast-temp">-1°C</span></div>
             </div>
         </div>
+        <div id="last-updated">Laddar...</div>
     </div>
 </div>
 
@@ -191,26 +119,30 @@ async function updateWeather() {
         if (rain > 0 || code >= 51) {
             icon.innerText = "🌧️"; desc.innerText = "Nederbörd";
             alert.style.display = 'block';
-            tipsHtml = `<strong>Dagens tips:</strong><ul><li>Dra vantarna UNDER jackärmen.</li><li>Galonbyxor är ett måste idag!</li></ul>`;
+            tipsHtml = `<strong>Dagens tips:</strong><ul><li>Dra vantarna UNDER jackärmen.</li><li>Galonbyxor behövs idag!</li></ul>`;
             clothesHtml = `<li><strong>På:</strong> Galonbyxor & Gummistövlar.</li>`;
         } else if (temp <= 0) {
             icon.innerText = "❄️"; desc.innerText = "Kallt";
             alert.style.display = 'none';
-            tipsHtml = `<strong>Dagens tips:</strong><ul><li>Fokus på ullsockor idag.</li><li>Lager-på-lager håller värmen bäst.</li></ul>`;
+            tipsHtml = `<strong>Dagens tips:</strong><ul><li>Använd varma ullsockor.</li><li>Lager-på-lager håller värmen bäst.</li></ul>`;
             clothesHtml = `<li><strong>På:</strong> Vinteroverall & varma kängor.</li>`;
         } else {
             icon.innerText = "⛅"; desc.innerText = "Uppehåll";
             alert.style.display = 'none';
-            tipsHtml = `<strong>Dagens tips:</strong><ul><li>Skalställ räcker utmärkt.</li><li>Glöm inte en tunnare mössa.</li></ul>`;
-            clothesHtml = `<li><strong>På:</strong> Skaljacka och skalbyxor.</li>`;
+            tipsHtml = `<strong>Dagens tips:</strong><ul><li>Skalställ räcker utmärkt.</li><li>Glöm inte en tunn mössa.</li></ul>`;
+            clothesHtml = `<li><strong>På:</strong> Skaljacka & skalbyxor.</li>`;
         }
 
-        // Din påminnelse om extra kläder för inomhusbruk
-        clothesHtml += `<li style="margin-top:10px; color:#d9534f; font-weight:bold;">Kom ihåg: Barnen behöver extra kläder att byta om till om de blir våta inne.</li>`;
+        // Här lägger vi till din fasta påminnelse som alltid ska vara med
+        clothesHtml += `<li style="margin-top:10px; color:#d9534f; font-weight:bold;">Barnen behöver extra kläder att byta om till om de blir våta inne.</li>`;
 
         document.getElementById('dynamic-tip').innerHTML = tipsHtml;
         document.getElementById('clothing-list').innerHTML = clothesHtml;
-    } catch (e) { console.log("Fel vid hämtning"); }
+        document.getElementById('last-updated').innerText = "Uppdaterad: " + new Date().toLocaleTimeString();
+
+    } catch (e) {
+        document.getElementById('dynamic-tip').innerHTML = "Kunde inte hämta live-väder just nu.";
+    }
 }
 updateWeather();
 </script>
